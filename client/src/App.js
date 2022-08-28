@@ -1,19 +1,50 @@
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes,Route } from "react-router-dom";
 import {useEffect} from "react";
+import GlobalStyles from "./GlobalStyles";
+import styled from "styled-components";
+import NavBar from "./components/NavBar";
+import Login from "./pages/login";
 
 
 function App() {
 
-  useEffect(()=>{
-    fetch("/test")
-      .then(res=>res.json())
-      .then(data=>console.log(data))
-  },[])
+  
   return (
-   <div>
+  <>
+    <GlobalStyles/>
+    <BackContainer>
+      <BodyWrapper className='app'>
+        <Router>
+          <NavBar/>
+          <Routes>
+            <Route exact path='/' element={'home'}/>
+            <Route exact path="/login" element={<Login/>}/>
+            <Route exact path='*' element={'404-page-not-found'}/>
+          </Routes>
+        </Router>
+        
+
+      </BodyWrapper>
+    </BackContainer>
     
-   </div>
+  </>
   );
 }
 
 export default App;
+
+const BackContainer=styled.div`
+  /* background-color: aqua; */
+`
+
+
+const BodyWrapper=styled.div`
+  
+  max-width: 800px;
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  left: 50%;
+  transform: translate(-50%,0);
+
+`;

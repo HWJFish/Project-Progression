@@ -3,6 +3,8 @@
 const express =require("express");
 const morgan = require("morgan");
 const {connectDb,getDb} =require("./database");
+const {sendResponse}=require("./utils");
+const {handleLogin}=require('./handlers')
 
 const app=express();
 //const path = require('path')
@@ -18,6 +20,15 @@ const startServer=async ()=>{
         //.use('/static', express.static(path.join(__dirname, 'public')));
 
     app.get("/test",(req,res)=>{res.status(200).json({status:200,message:"test"})});
+
+
+
+    app.post('/api/login',handleLogin);
+
+    app.get("*",(req,res)=>{
+        sendResponse(res,404,null,'End-Point-Not-Found');
+
+    })
     
     app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 }
