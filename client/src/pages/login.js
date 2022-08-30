@@ -15,24 +15,26 @@ const redirect_uri='http://localhost:3000/login';
 const Login=()=>{
     const [searchParams] = useSearchParams();
     const navigate=useNavigate();
-    //console.log(searchParams.toString());
-    //searchParams.forEach(param=>console.log(param))
     const {user,setUser}=useContext(UserContext);
     useEffect(()=>{
-        console.log(searchParams.get('code'));
+        // go back to main if already login
         if(user){
-            navigate('/')
-        }else
+            navigate('/');
+        }else// if have a code query redirected from github, fetch backend to login
         if(searchParams.get('code')){
-            console.log(searchParams.get('code'));
+            
             fetch('/api/login',{
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({code:searchParams.get('code')})
-            }).then(res=>res.json)
+            }).then(res=>res.json())
             .then(data=>{
-                console.log(data);
-                setUser(data.data);
+                
+                if(data.data){
+                    setUser(data.data);
+                    navigate('/');
+                }
+                
             })
             .catch(error=>console.log('login Failed',error))
         }else{

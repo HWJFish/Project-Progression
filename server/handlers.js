@@ -1,16 +1,16 @@
 const { sendResponse } = require('./utils')
 
-//const axios = require('axios').default;
-const fetch=require('node-fetch');
-const FormData=require('form-data');
+const axios = require('axios').default;
+const { v4: uuidv4 } = require("uuid");
 const { connectDb, getDb } = require("./database");
 
 require("dotenv").config();
 const { CLIENT_ID, CLIENT_SECRETS } = process.env;
+const DEVICE_LIMIT=3;
 
 
 const handleLogin = async (req, res) => {
-    //console.log(CLIENT_ID,CLIENT_SECRETS);
+    
     //get token from api
     const code = req.body.code;
     const db = getDb();
@@ -18,26 +18,66 @@ const handleLogin = async (req, res) => {
         return sendResponse(res, 400, null, "Missing-Code");
     }
     try {
-        console.log(code)
-        const data = new FormData();
-        data.append("client_id", CLIENT_ID);
-        data.append("client_secret", CLIENT_SECRETS);
-        data.append("code", code);
-        const response = await fetch(`https://github.com/login/oauth/access_token`, {
-            method: "POST",
-            body: data,
-          });
-        console.log(response);
-        if (!response.access_token) {
+        
+        
+        //get accessToken by github
+        const tokenResponse = await axios({
+            method: 'post',
+            url: 'https://github.com/login/oauth/access_token',
+            data: {
+                client_id: CLIENT_ID,
+                client_secret: CLIENT_SECRETS,
+                code: code
+            },
+            headers: { 'Accept': 'application/json' }
+        })
+
+        const tokenData = tokenResponse.data;
+        
+        if (!tokenData.access_token) {
             return sendResponse(res, 400, null, "Cannot-get-token-from-github");
         }
-        db.users.insertOne({
-            _id: response.access_token,
+        //get userInfo by token
+        let userResponse = await axios({
+            method: 'get',
+            url: 'https://api.github.com/user',
+            data: {
+                client_id: CLIENT_ID,
+                client_secret: CLIENT_SECRETS,
+                code: code
+            },
+            headers: { 
+                        'Accept': 'application/json' ,
+                        "Authorization": `token ${tokenData.access_token}`
+                    }
         })
-        sendResponse(res, 200, null, "success");
+        // find if current user is already in the database
+        // create one or login with the key
+        userResponse=userResponse.data;
+        const tempKey=uuidv4();
+        const user=await db.collection('users').findOne({id:userResponse.id});
+        if(user){
+            await db.collection('users').updateOne({id:userResponse.id},{
+                $set:{token:tokenData.access_token,accessKey:[...user.accessKey.slice(-DEVICE_LIMIT+1),tempKey]}
+            })
+        }
+        else{
+            await db.collection('users').insertOne({
+                ...userResponse,token:tokenData.access_token,accessKey:[tempKey]
+            })
+        }
+        const clientResponse={
+            login:userResponse.login,
+            tempKey,
+            url:userResponse.html_url,
+            avatar_url:userResponse.avatar_url
+        }
+        sendResponse(res, 200,clientResponse, "success");
     } catch (error) {
         console.log(error);
     }
 }
+
+
 
 module.exports = { handleLogin }

@@ -4,12 +4,13 @@ import { UserContext } from "../UserContext";
 import { Link, NavLink } from "react-router-dom";
 
 const NavBar = () => {
-    const { user } = useContext(UserContext);
+    const { user,setUser } = useContext(UserContext);
 
     return <Wrapper>
         <h1>Progression</h1>
         {user ? <div className="FeatureContainer">
 
+            <button className="logout" onClick={()=>{setUser(null)}}>Logout</button>
         </div>
             : <Link className="NavLink" to="/login">
                 Login
@@ -30,10 +31,10 @@ const Wrapper = styled.div`
     align-items: center;
     height: 50px;
     .FeatureContainer{
-
+        display: flex;
     }
     .NavLink{
         text-decoration: none;
-        
+
     }
 `;
