@@ -4,6 +4,7 @@ import GlobalStyles from "./GlobalStyles";
 import styled from "styled-components";
 import NavBar from "./components/NavBar";
 import Login from "./pages/login";
+import Home from './pages/home';
 
 
 function App() {
@@ -17,8 +18,9 @@ function App() {
         <Router>
           <NavBar/>
           <Routes>
-            <Route exact path='/' element={'home'}/>
+            <Route exact path='/' element={<Home/>}/>
             <Route exact path="/login" element={<Login/>}/>
+            <Route exact path="/profile" element={'profile'}/>
             <Route exact path='*' element={'404-page-not-found'}/>
           </Routes>
         </Router>
@@ -46,5 +48,9 @@ const BodyWrapper=styled.div`
   position: relative;
   left: 50%;
   transform: translate(-50%,0);
+  padding: 0 10px;
+  border-width: 0 2px;
+  border-style:solid;
+  border-color: #f7f7f7;
 
 `;

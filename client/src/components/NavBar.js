@@ -7,7 +7,7 @@ const NavBar = () => {
     const { user,setUser } = useContext(UserContext);
 
     return <Wrapper>
-        <h1>Progression</h1>
+        <Link to='/' className="Logo"><h1>Progression</h1></Link>
         {user ? <div className="FeatureContainer">
 
             <button className="logout" onClick={()=>{setUser(null)}}>Logout</button>
@@ -30,6 +30,9 @@ const Wrapper = styled.div`
     justify-content: space-between;
     align-items: center;
     height: 50px;
+    .Logo{
+        text-decoration: none;
+    }
     .FeatureContainer{
         display: flex;
     }

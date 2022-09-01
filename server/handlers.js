@@ -15,6 +15,7 @@ const handleLogin = async (req, res) => {
     const code = req.body.code;
     const db = getDb();
     if (!code) {
+        
         return sendResponse(res, 400, null, "Missing-Code");
     }
     try {
@@ -35,6 +36,7 @@ const handleLogin = async (req, res) => {
         const tokenData = tokenResponse.data;
         
         if (!tokenData.access_token) {
+            //console.log(code,tokenData)
             return sendResponse(res, 400, null, "Cannot-get-token-from-github");
         }
         //get userInfo by token
@@ -63,7 +65,7 @@ const handleLogin = async (req, res) => {
         }
         else{
             await db.collection('users').insertOne({
-                ...userResponse,token:tokenData.access_token,accessKey:[tempKey]
+                ...userResponse,token:tokenData.access_token,accessKey:[tempKey],isPublic:false
             })
         }
         const clientResponse={
