@@ -2,12 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import { UserContextProvider } from './UserContext';
+import { ProgressContextProvider } from './ProgressContext';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <UserContextProvider><App /></UserContextProvider>
+    <ProgressContextProvider><UserContextProvider><App /></UserContextProvider></ProgressContextProvider>
+    
     
   </React.StrictMode>
 );

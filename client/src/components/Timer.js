@@ -1,41 +1,18 @@
 import styled from "styled-components";
 import {  CircularProgressbarWithChildren, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import { useEffect, useState } from "react";
-import { format } from 'date-fns'
+import {  useContext} from "react";
+import { format } from 'date-fns';
+import { ProgressContext } from "../ProgressContext";
+
 
 const Timer = () => {
-    //default values
-    const LOCAL_KEY='timer';
-    let workTime = 25, breakTime = 5, longBreakTime = 15;
-    let iniCycle = {
-        time: workTime * 1000 * 60,
-        count: 1,
-        isBreak: false,
-        startStatus: 'notStart',
-        workTime,
-        breakTime,
-        longBreakTime,
-        startTime:null
-    }
-    // const [isInterrupted,setIsInterrupted]=useState(false);
-    const loadData=()=>{
-        let storage=window.localStorage.getItem(LOCAL_KEY);
-        if(storage){
-            storage=JSON.parse(storage);
-            if(storage.startStatus!=='notStart'){
-                storage.startStatus='interrupted'
-                //setIsInterrupted(true);
-            }
-
-            return storage;
-
-        }else return iniCycle;
-    }
-    const [timer, setTimer] = useState(()=>loadData());
     
-    let timeInterval = null;
-    //update the timer based on the change of time period
+    
+    
+    const {timer, setTimer,iniCycle} = useContext(ProgressContext);
+    
+    
     const updatePeriod = (e) => {
         const newTimer = { ...timer, [e.target.id]: e.target.value }
         newTimer.time = newTimer.workTime * 1000 * 60;
@@ -50,32 +27,7 @@ const Timer = () => {
     }
     
 
-    useEffect(()=>{
-        window.localStorage.setItem(LOCAL_KEY,JSON.stringify(timer));
-        if(timer.startStatus==='started'){
-            // interesting note: setTimeout and setInterval works the same here
-            timeInterval = setTimeout(() => {
-                const newTimer = { ...timer };
-                newTimer.time -= 1000;
-                if (newTimer.time <= 0) {//actually should be ===0 but just incase
-                    if (timer.isBreak) {
-                        newTimer.count++;
-                        newTimer.time=newTimer.workTime*1000*60;
-                    } else {
-                        if(timer.count%4===0){
-                            newTimer.time=newTimer.longBreakTime*1000*60;
-                        }else{
-                            newTimer.time=newTimer.breakTime*1000*60;
-                        }
-                    }
-                    newTimer.isBreak=!timer.isBreak;
-                }
-                
-                setTimer(newTimer);
-            }, 1000)
-        }
-        return ()=>clearTimeout(timeInterval);
-    },[timer])
+    
 
     return <Wrapper>
         {timer.startStatus==='interrupted'&&<div className="interruptBox">
@@ -100,15 +52,15 @@ const Timer = () => {
 
                     <label className="inputLabel">
                         Work:{' '}
-                        <input type='number' min='1' max='60' className="inputField" id='workTime' name='workTime' defaultValue={workTime} />
+                        <input type='number' min='1' max='60' className="inputField" id='workTime' name='workTime' defaultValue={timer.workTime} />
                     </label>
                     <label className="inputLabel">
                         Break:{' '}
-                        <input type='number' min='1' max='60' className="inputField" id='breakTime' name='breakTime' defaultValue={breakTime} />
+                        <input type='number' min='1' max='60' className="inputField" id='breakTime' name='breakTime' defaultValue={timer.breakTime} />
                     </label>
                     <label className="inputLabel">
                         Long Break:{' '}
-                        <input type='number' min='1' max='60' className="inputField" id='longBreakTime' name='longBreakTime' defaultValue={longBreakTime} />
+                        <input type='number' min='1' max='60' className="inputField" id='longBreakTime' name='longBreakTime' defaultValue={timer.longBreakTime} />
                     </label>
                 </div>
                 <button className="start" onClick={startTimer}>Start</button>
