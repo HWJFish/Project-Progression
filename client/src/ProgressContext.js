@@ -1,13 +1,14 @@
 import { createContext, useEffect, useState } from "react";
+import {v4 as uuidv4} from 'uuid'
 
-export const ProgressContext=createContext();
+export const ProgressContext = createContext();
 
 
 
-export const ProgressContextProvider=({children})=>{
+export const ProgressContextProvider = ({ children }) => {
     //default values
-    const TIMER_KEY='timer';
-    const TASK_KEY='task';
+    const TIMER_KEY = 'timer';
+    const TASK_KEY = 'task';
     let workTime = 25, breakTime = 5, longBreakTime = 15;
     const iniCycle = {
         time: workTime * 1000 * 60,
@@ -17,32 +18,46 @@ export const ProgressContextProvider=({children})=>{
         workTime,
         breakTime,
         longBreakTime,
-        startTime:null
+        startTime: null
     }
-    const loadData=()=>{
-        let storage=window.localStorage.getItem(TIMER_KEY);
-        if(storage){
-            storage=JSON.parse(storage);
-            if(storage.startStatus!=='notStart'){
-                storage.startStatus='interrupted'
+    const loadData = () => {
+        let storage = window.localStorage.getItem(TIMER_KEY);
+        if (storage) {
+            storage = JSON.parse(storage);
+            if (storage.startStatus !== 'notStart') {
+                storage.startStatus = 'interrupted'
                 //setIsInterrupted(true);
             }
 
             return storage;
 
-        }else return iniCycle;
+        } else return iniCycle;
     }
-    const [timer, setTimer] = useState(()=>loadData());
-    const [task,setTask]=useState(()=>{
-        const storage=window.localStorage.getItem(TASK_KEY);
-        return storage?JSON.parse(storage):{};
+    const [timer, setTimer] = useState(() => loadData());
+    const [task, setTask] = useState(() => {
+        // task structure
+        // {
+        //     taskName,
+        //     _id,
+        //     userId,
+        //     steps:[{description,isCompleted}],
+        //     tags:[]
+        // }
+        const storage = window.localStorage.getItem(TASK_KEY);
+        return storage ? JSON.parse(storage) : {
+            taskName:'',
+            _id:uuidv4(),
+            userId:'',
+            steps:[],
+            tags:[]
+        };
     })
 
     let timeInterval = null;
     //update the timer based on the change of time period
-    useEffect(()=>{
-        window.localStorage.setItem(TIMER_KEY,JSON.stringify(timer));
-        if(timer.startStatus==='started'){
+    useEffect(() => {
+        window.localStorage.setItem(TIMER_KEY, JSON.stringify(timer));
+        if (timer.startStatus === 'started') {
             // interesting note: setTimeout and setInterval works the same here
             timeInterval = setTimeout(() => {
                 const newTimer = { ...timer };
@@ -50,31 +65,31 @@ export const ProgressContextProvider=({children})=>{
                 if (newTimer.time <= 0) {//actually should be ===0 but just incase
                     if (timer.isBreak) {
                         newTimer.count++;
-                        newTimer.time=newTimer.workTime*1000*60;
+                        newTimer.time = newTimer.workTime * 1000 * 60;
                     } else {
-                        if(timer.count%4===0){
-                            newTimer.time=newTimer.longBreakTime*1000*60;
-                        }else{
-                            newTimer.time=newTimer.breakTime*1000*60;
+                        if (timer.count % 4 === 0) {
+                            newTimer.time = newTimer.longBreakTime * 1000 * 60;
+                        } else {
+                            newTimer.time = newTimer.breakTime * 1000 * 60;
                         }
                     }
-                    newTimer.isBreak=!timer.isBreak;
+                    newTimer.isBreak = !timer.isBreak;
                 }
-                
+
                 setTimer(newTimer);
             }, 1000)
         }
-        return ()=>clearTimeout(timeInterval);
-    },[timer])
+        return () => clearTimeout(timeInterval);
+    }, [timer])
 
 
-    useEffect(()=>{
-        window.localStorage.setItem(TASK_KEY,JSON.stringify(task));
-    },[task])
+    useEffect(() => {
+        window.localStorage.setItem(TASK_KEY, JSON.stringify(task));
+    }, [task])
 
-    
 
-    return <ProgressContext.Provider value={{timer, setTimer,iniCycle,task,setTask}}>
+
+    return <ProgressContext.Provider value={{ timer, setTimer, iniCycle, task, setTask }}>
         {children}
     </ProgressContext.Provider>
 

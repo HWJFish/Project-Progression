@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 import styled from "styled-components";
 import { ProgressContext } from "../ProgressContext";
 
@@ -12,22 +12,61 @@ import { ProgressContext } from "../ProgressContext";
 // }
 
 //used to show on main page
-const Task=()=>{
-     const {task,setTask}=useContext(ProgressContext)
-    
+const TaskEditable = () => {
+    const { task, setTask } = useContext(ProgressContext);
+    const ref = useRef(null);
+
+    const updateStep = (step, index, newStep) => {
+        const tempSteps = [...task.steps];
+        tempSteps[index] = newStep;
+        setTask({ ...task, steps: tempSteps });
+    }
+    const addStep = (newStep) => {
+        const tempSteps = [...task.steps];
+        tempSteps.push(newStep);
+        setTask({ ...task, steps: tempSteps });
+    }
+
     return <Wrapper>
-        <h3>{task.taskName}</h3>
-        {task.steps.map((step,index)=>{
-            
-                return <div className="stepContainer">
-                        <input type='checkbox' defaultChecked={step.isCompleted}/>
-                        <input key={'step-'+index} defaultValue={step.description}/>
+        {task.taskName ? <><h3>{task.taskName}</h3>
+            {task.steps.map((step, index) => {
+
+                return <div className="stepContainer" key={'step-' + index}>
+                        <input type='checkbox' checked={step.isCompleted} value='true' onChange={(e) => {
+
+                            updateStep(step, index, { description: step.description, isCompleted: !step.isCompleted })
+                        }} />
+                        <input  value={step.description} onChange={(e) => {
+                            updateStep(step, index, { description: e.target.value, isCompleted: step.isCompleted })
+                        }} />
                     </div>
-            
-        })}
+
+                
+
+            })}
+            <div>
+                <input ref={ref} />
+                <button onClick={() => {
+                    const value = ref.current.value;
+                    if (value) {
+                        addStep({ description: value, isCompleted: false })
+                        ref.current.value = '';
+                    }
+                }}>Add Task Step</button>
+            </div>
+        </>
+            : <div>
+                <input ref={ref} />
+                <button onClick={() => {
+                    const value = ref.current.value;
+                    if (value) {
+                        setTask({ ...task, taskName: value })
+                    }
+                }}>Add Task</button>
+            </div>}
     </Wrapper>
 }
 
-export default Task;
-const Wrapper=styled.div`
+export default TaskEditable;
+const Wrapper = styled.div`
 `

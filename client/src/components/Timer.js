@@ -48,19 +48,19 @@ const Timer = () => {
         {// show start button and set period form
             timer.startStatus === 'notStart' && <div>
                 <p >Period Length Setting:</p>
-                <div className="labelContainer" onChange={updatePeriod}>
+                <div className="labelContainer" >
 
                     <label className="inputLabel">
                         Work:{' '}
-                        <input type='number' min='1' max='60' className="inputField" id='workTime' name='workTime' defaultValue={timer.workTime} />
+                        <input type='number' min='1' max='60' className="inputField" id='workTime' name='workTime' value={timer.workTime} onChange={updatePeriod}/>
                     </label>
                     <label className="inputLabel">
                         Break:{' '}
-                        <input type='number' min='1' max='60' className="inputField" id='breakTime' name='breakTime' defaultValue={timer.breakTime} />
+                        <input type='number' min='1' max='60' className="inputField" id='breakTime' name='breakTime' value={timer.breakTime} onChange={updatePeriod}/>
                     </label>
                     <label className="inputLabel">
                         Long Break:{' '}
-                        <input type='number' min='1' max='60' className="inputField" id='longBreakTime' name='longBreakTime' defaultValue={timer.longBreakTime} />
+                        <input type='number' min='1' max='60' className="inputField" id='longBreakTime' name='longBreakTime' value={timer.longBreakTime} onChange={updatePeriod}/>
                     </label>
                 </div>
                 <button className="start" onClick={startTimer}>Start</button>
