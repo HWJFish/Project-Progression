@@ -33,6 +33,14 @@ export const ProgressContextProvider = ({ children }) => {
 
         } else return iniCycle;
     }
+    const iniTask={
+        taskName:'',
+        _id:uuidv4(),
+        userId:'',
+        steps:[],
+        tags:[]
+    };
+    
     const [timer, setTimer] = useState(() => loadData());
     const [task, setTask] = useState(() => {
         // task structure
@@ -44,13 +52,7 @@ export const ProgressContextProvider = ({ children }) => {
         //     tags:[]
         // }
         const storage = window.localStorage.getItem(TASK_KEY);
-        return storage ? JSON.parse(storage) : {
-            taskName:'',
-            _id:uuidv4(),
-            userId:'',
-            steps:[],
-            tags:[]
-        };
+        return storage ? JSON.parse(storage) : iniTask;
     })
 
     let timeInterval = null;
@@ -87,9 +89,14 @@ export const ProgressContextProvider = ({ children }) => {
         window.localStorage.setItem(TASK_KEY, JSON.stringify(task));
     }, [task])
 
+    const resetTimer=()=>{
+        setTimer(iniCycle);
+    }
+    const resetTask=()=>{
+        setTask(iniTask);
+    }
 
-
-    return <ProgressContext.Provider value={{ timer, setTimer, iniCycle, task, setTask }}>
+    return <ProgressContext.Provider value={{ timer, setTimer, resetTimer, task, setTask,resetTask }}>
         {children}
     </ProgressContext.Provider>
 

@@ -10,7 +10,7 @@ const Timer = () => {
     
     
     
-    const {timer, setTimer,iniCycle} = useContext(ProgressContext);
+    const {timer, setTimer,resetTimer} = useContext(ProgressContext);
     
     
     const updatePeriod = (e) => {
@@ -70,7 +70,7 @@ const Timer = () => {
             </button>}
         {timer.startStatus==='stopped'||timer.startStatus==='interrupted'&&<div>
             <button onClick={startTimer}>Resume</button>
-            <button onClick={()=>{setTimer(iniCycle)}}>Discard</button>
+            <button onClick={resetTimer}>Discard</button>
             </div>}
 
 

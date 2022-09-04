@@ -28,7 +28,7 @@ const TaskEditable = () => {
     }
 
     return <Wrapper>
-        {task.taskName ? <><h3>{task.taskName}</h3>
+        {task.taskName ? <><h2>{task.taskName}</h2>
             {task.steps.map((step, index) => {
 
                 return <div className="stepContainer" key={'step-' + index}>
