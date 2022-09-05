@@ -1,4 +1,4 @@
-import { useContext, useRef } from "react";
+import { useContext, useRef, useState } from "react";
 import styled from "styled-components";
 import { ProgressContext } from "../ProgressContext";
 
@@ -15,6 +15,7 @@ import { ProgressContext } from "../ProgressContext";
 const TaskEditable = () => {
     const { task, setTask } = useContext(ProgressContext);
     const ref = useRef(null);
+    
 
     const updateStep = (step, index, newStep) => {
         const tempSteps = [...task.steps];
@@ -60,7 +61,8 @@ const TaskEditable = () => {
                 <button onClick={() => {
                     const value = ref.current.value;
                     if (value) {
-                        setTask({ ...task, taskName: value })
+                        setTask({ ...task, taskName: value });
+                        ref.current.value='';
                     }
                 }}>Add Task</button>
             </div>}

@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import {v4 as uuidv4} from 'uuid'
+//import {v4 as uuidv4} from 'uuid'
 
 export const ProgressContext = createContext();
 
@@ -35,7 +35,7 @@ export const ProgressContextProvider = ({ children }) => {
     }
     const iniTask={
         taskName:'',
-        _id:uuidv4(),
+        //_id:uuidv4(),
         userId:'',
         steps:[],
         tags:[]
@@ -46,7 +46,7 @@ export const ProgressContextProvider = ({ children }) => {
         // task structure
         // {
         //     taskName,
-        //     _id,
+        //     _id,//set on the backend
         //     userId,
         //     steps:[{description,isCompleted}],
         //     tags:[]
