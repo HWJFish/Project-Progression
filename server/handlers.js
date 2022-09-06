@@ -1,4 +1,4 @@
-const { sendResponse } = require('./utils')
+const { sendResponse,verifyKey } = require('./utils')
 
 const axios = require('axios').default;
 const { v4: uuidv4 } = require("uuid");
@@ -84,17 +84,14 @@ const handleLogin = async (req, res) => {
 
 const addProgress = async (req, res) => {
     const { task, id, tempKey } = req.body;
-    if (!task || !id || !tempKey) {
+    if (!task ) {
         return sendResponse(res, 400, null, "Missing-Data");
     }
     const db = getDb();
     try {
-        const user = await db.collection('users').findOne({ id });
-        if (!user) {
-            return sendResponse(res, 404, null, 'User-not-found');
-        }
-        if(!user.accessKey.includes(tempKey)){
-            return sendResponse(res, 400, null, 'Invalid-access-key');
+        const verifyResult=await verifyKey(res,id,tempKey);
+        if(!verifyResult){
+            return;
         }
         const result =await db.collection('tasks').insertOne(task);
 
@@ -104,7 +101,105 @@ const addProgress = async (req, res) => {
         sendResponse(res, 500, null, "Unknown-Error");
     }
 }
+const getProgress=async(req,res)=>{
+    const LIMIT=10;
+    let {start,tag,id,tempKey}=req.body;
+    if(!start){
+        start=1;
+    }
+    try{
+        const db=getDb();
+        const verifyResult=await verifyKey(res,id,tempKey);
+        if(!verifyResult){
+            return;
+        }
+        const query={userId:id};
+        if(tag){
+            query.tags=tag;
+        }
+        const result=await db.collection('tasks')
+            .find(query)
+            .sort({startTime:-1})
+            .skip(start-1)
+            .limit(LIMIT)
+            .toArray();
+        if(result){
+            sendResponse(res,200,result,'Success');
+        }else{
+            sendResponse(res,404,result,'Record-not-found');
+        }
+
+    }catch(error){
+        console.log(error)
+        sendResponse(res,500,null,'Unknown-Error');
+    }
+
+
+}
+const getDailyTask =async(req,res)=>{
+    const LIMIT=10;
+    let {start,id,tempKey}=req.body;
+    if(!start){
+        start=1;
+    }
+    try{
+        const db=getDb();
+        const verifyResult=await verifyKey(res,id,tempKey);
+        if(!verifyResult){
+            return;
+        }
+        const query={userId:id};
+        
+        const result=await db.collection('dailyTask')
+            .find(query)
+            .skip(start-1)
+            .limit(LIMIT)
+            .toArray();
+        if(result){
+            sendResponse(res,200,result,'Success');
+        }else{
+            sendResponse(res,404,result,'Record-not-found');
+        }
+
+    }catch(error){
+        console.log(error)
+        sendResponse(res,500,null,'Unknown-Error');
+    }
+}
+
+const postDailyTask =async(req,res)=>{
+    const LIMIT=10;
+    let {start,id,tempKey,task}=req.body;
+    if(!start){
+        start=1;
+    }
+    try{
+        const db=getDb();
+        const verifyResult=await verifyKey(res,id,tempKey);
+        if(!verifyResult){
+            return;
+        }
+        
+        const result=await db.collection('dailyTask')
+            .insertOne({task,userId:id});
+        const query={userId:id};
+        const newResult=await db.collection('dailyTask')
+            .find(query)
+            .skip(start-1)
+            .limit(LIMIT)
+            .toArray();
+        if(newResult){
+            sendResponse(res,200,newResult,'Success');
+        }else{
+            sendResponse(res,404,newResult,'Record-not-found');
+        }
+
+    }catch(error){
+        console.log(error)
+        sendResponse(res,500,null,'Unknown-Error');
+    }
+}
 
 
 
-module.exports = { handleLogin, addProgress }
+module.exports = { handleLogin, addProgress,getProgress,getDailyTask ,postDailyTask}

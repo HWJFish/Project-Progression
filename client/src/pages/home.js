@@ -10,14 +10,13 @@ import { Link } from "react-router-dom";
 
 const Home=()=>{
     const{user}=useContext(UserContext);
-    const{timer}=useContext(ProgressContext);
+    //const{timer}=useContext(ProgressContext);
     return <Wrapper>
         <UserInfo/>
         <Timer/>
         <TaskEditable/>
         
-        {(timer.startStatus==='interrupted'||timer.startStatus==='stopped')&&
-            (user?<Submission/>:<Link to='/login'>Login to submit</Link>)}
+        {(user?<Submission/>:<Link to='/login'>Login to submit</Link>)}
     </Wrapper>
 }
 export default Home;

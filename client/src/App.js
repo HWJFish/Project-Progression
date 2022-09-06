@@ -3,8 +3,10 @@ import {useEffect} from "react";
 import GlobalStyles from "./GlobalStyles";
 import styled from "styled-components";
 import NavBar from "./components/NavBar";
-import Login from "./pages/login";
-import Home from './pages/home';
+import Login from "./pages/Login";
+import Home from './pages/Home';
+import Profile from "./pages/Profile";
+import DailyTask from "./pages/DailyTask";
 
 
 function App() {
@@ -20,7 +22,8 @@ function App() {
           <Routes>
             <Route exact path='/' element={<Home/>}/>
             <Route exact path="/login" element={<Login/>}/>
-            <Route exact path="/profile" element={'profile'}/>
+            <Route exact path="/profile" element={<Profile/>}/>
+            <Route exact path="/daily-task" element={<DailyTask/>}/>
             <Route exact path='*' element={'404-page-not-found'}/>
           </Routes>
         </Router>

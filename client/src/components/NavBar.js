@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import styled from "styled-components";
 import { UserContext } from "../UserContext";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 const NavBar = () => {
     const { user,setUser } = useContext(UserContext);
@@ -9,7 +9,8 @@ const NavBar = () => {
     return <Wrapper>
         <Link to='/' className="Logo"><h1>Progression</h1></Link>
         {user ? <div className="FeatureContainer">
-
+            <NavLink to='/profile'>Profile</NavLink>
+            <NavLink to='/daily-task'>Daily Task</NavLink>
             <button className="logout" onClick={()=>{setUser(null)}}>Logout</button>
         </div>
             : <Link className="NavLink" to="/login">

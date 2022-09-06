@@ -4,6 +4,7 @@ import 'react-circular-progressbar/dist/styles.css';
 import {  useContext} from "react";
 import { format } from 'date-fns';
 import { ProgressContext } from "../ProgressContext";
+import Joke from "./Joke";
 
 
 const Timer = () => {
@@ -33,6 +34,9 @@ const Timer = () => {
         {timer.startStatus==='interrupted'&&<div className="interruptBox">
                 <p>An interruption was detected. Start time:{format(new Date(timer.startTime),'yyy-MMM-d')}</p>
             </div>}
+        {
+            timer.isBreak&&<Joke/>
+        }
         <div className="infoContainer">
             <p>Current Cycle: {timer.count}</p>
             <p>Status: {timer.isBreak?"Break":"Work"}</p>
