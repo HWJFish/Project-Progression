@@ -17,7 +17,7 @@ const TaskEditable = () => {
     const ref = useRef(null);
 
     //update the step with the index
-    const updateStep = ( index, newStep) => {
+    const updateStep = (step, index, newStep) => {
         const tempSteps = [...task.steps];
         tempSteps[index] = newStep;
         setTask({ ...task, steps: tempSteps });
