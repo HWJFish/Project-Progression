@@ -36,7 +36,7 @@ const handleLogin = async (req, res) => {
         const tokenData = tokenResponse.data;
 
         if (!tokenData.access_token) {
-            //console.log(code,tokenData)
+            
             return sendResponse(res, 400, null, "Cannot-get-token-from-github");
         }
         //get userInfo by token
@@ -82,6 +82,7 @@ const handleLogin = async (req, res) => {
     }
 }
 
+// add a progress to database
 const addProgress = async (req, res) => {
     const { task, id, tempKey } = req.body;
     if (!task ) {
@@ -101,6 +102,8 @@ const addProgress = async (req, res) => {
         sendResponse(res, 500, null, "Unknown-Error");
     }
 }
+
+//get progresses from database
 const getProgress=async(req,res)=>{
     const LIMIT=10;
     let {start,tag,id,tempKey}=req.body;
@@ -136,6 +139,8 @@ const getProgress=async(req,res)=>{
 
 
 }
+
+//get dailytask from database
 const getDailyTask =async(req,res)=>{
     const LIMIT=10;
     let {start,id,tempKey}=req.body;
@@ -167,6 +172,7 @@ const getDailyTask =async(req,res)=>{
     }
 }
 
+//add a new daily task from database
 const postDailyTask =async(req,res)=>{
     const LIMIT=10;
     let {start,id,tempKey,task}=req.body;

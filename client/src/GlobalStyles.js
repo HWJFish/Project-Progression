@@ -1,8 +1,10 @@
 import { createGlobalStyle } from 'styled-components';
-
+//#2d00f7
 export default createGlobalStyle`
     :root{
-        --color-main: aqua;
+        --color-main: #9d4edd;
+
+        --color-white-grey:lightgrey;
     }
 
   *,
@@ -11,7 +13,7 @@ export default createGlobalStyle`
     box-sizing: border-box;
     -webkit-font-smoothing: antialiased;
     font-family:  Verdana, sans-serif;
-    color: var(--color-main);
+    
   }
 
   html, body {
@@ -63,6 +65,17 @@ export default createGlobalStyle`
   body {
     line-height: 1;
     
+  }
+  h1, h2,h3{
+    color: var(--color-main);
+  }
+  button{
+    margin: 0 10px;
+    border: none;
+    color: white;
+    background-color: var(--color-main);
+    border-radius: 5px;
+    padding: 3px 5px;
   }
 
 `;

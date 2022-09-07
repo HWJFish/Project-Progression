@@ -3,7 +3,7 @@ import UserInfo from "../components/UserInfo";
 import { CircularProgress } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../UserContext";
+import { UserContext } from "../context/UserContext";
 import Task from "../components/Task";
 
 
@@ -55,14 +55,19 @@ const Profile=()=>{
         {user&&<UserInfo/>}
         {user&&<div>
             <label>
-                Search for a tag
+                Search for a tag: 
                 <input ref={ref}/>
             </label>
             <button onClick={searchTag}>Search</button>
             {isLoading?<CircularProgress/>
-                :tasks.length>0?tasks.map((task)=>{
-                    return <Task key={task._id}  task={task}/>
-                }):<p>No result found. Start adding one!</p>}
+                :tasks.length>0?<div className="task-container">
+                    {
+                        tasks.map((task)=>{
+                            return <Task key={task._id}  task={task}/>
+                        })
+                    }
+                </div>
+                :<p>No result found. Start adding one!</p>}
             
         </div>}
 
@@ -74,5 +79,9 @@ const Profile=()=>{
 export default Profile;
 
 const Wrapper=styled.div`
+    margin: 20px 10px;
 
+    .task-container{
+        margin: 10px 0;
+    }
 `;

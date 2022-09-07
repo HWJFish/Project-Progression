@@ -3,8 +3,8 @@ import UserInfo from "../components/UserInfo";
 import { CircularProgress } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../UserContext";
-import { ProgressContext } from "../ProgressContext";
+import { UserContext } from "../context/UserContext";
+import { ProgressContext } from "../context/ProgressContext";
 
 
 
@@ -54,10 +54,12 @@ const DailyTask = () => {
         navigate('/');
     }
 
+
     useEffect(() => {
+        // redirect if not login
         if (!user) {
             navigate('/login');
-        } else {
+        } else {//  otherwise fetch the tasks
             setIsLoading(true);
             const requestBody = {
                 id: user.id,
@@ -87,14 +89,19 @@ const DailyTask = () => {
     return <Wrapper>
         {user && <UserInfo />}
         {user && <div>
-            <label>
-                Add a task
-                <input ref={ref} />
-            </label>
-            <button onClick={addDailyTask}>Add</button>
+            <div className="addTaskContainer">
+                <label>
+                    Add a task: 
+                    <input ref={ref} />
+                </label>
+                <button onClick={addDailyTask}>Add</button>
+            </div>
             {isLoading ? <CircularProgress />
                 : tasks.length > 0 ? tasks.map((task) => {
-                    return <p key={task._id}  >{task.task}<button onClick={() => startTask(task.task)}>start this task</button></p>
+                    return <div key={task._id}  >
+                        <span className="taskName">{task.task}</span>
+                        <button onClick={() => startTask(task.task)}>Start this task</button>
+                    </div>
                 }) : <p>No result found. Start adding one!</p>}
 
         </div>}
@@ -107,5 +114,10 @@ const DailyTask = () => {
 export default DailyTask;
 
 const Wrapper = styled.div`
-
+    .addTaskContainer{
+        margin: 10px 0;
+    }
+    .taskName{
+        margin: 0 10px 0 0;
+    }
 `;

@@ -1,6 +1,8 @@
 import { useContext, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { UserContext } from "../UserContext";
+import styled from "styled-components";
+import { UserContext } from "../context/UserContext";
+import { FiGithub } from "react-icons/fi";
 //import {v4 as uuidv4} from 'uuid';
 
 // a new account with ids, no personal info, replace to your own if you want
@@ -42,12 +44,25 @@ const Login=()=>{
         }
     },[])
 
-    return <div>
+    return <Wrapper>
         {!searchParams.code&&!user&&<a href={`https://github.com/login/oauth/authorize?scope=user:email&client_id=${CLIENT_ID}&redirect_uri=${redirect_uri}` }
-            >Login with github</a>}
-    </div>
+            ><FiGithub/> Login with github</a>}
+    </Wrapper>
 }
 
 export default Login;
+
+const Wrapper=styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 20%;
+    
+    a{
+        text-decoration: none;
+        font-size: 20px;
+    }
+
+`
 
 

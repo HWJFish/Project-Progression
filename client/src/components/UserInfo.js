@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import styled from "styled-components";
-import { UserContext } from "../UserContext";
+import { UserContext } from "../context/UserContext";
 import { Link } from "react-router-dom";
 
 const UserInfo=()=>{

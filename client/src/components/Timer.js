@@ -3,7 +3,7 @@ import {  CircularProgressbarWithChildren, buildStyles } from 'react-circular-pr
 import 'react-circular-progressbar/dist/styles.css';
 import {  useContext} from "react";
 import { format } from 'date-fns';
-import { ProgressContext } from "../ProgressContext";
+import { ProgressContext } from "../context/ProgressContext";
 import Joke from "./Joke";
 
 
@@ -50,8 +50,8 @@ const Timer = () => {
 
         </div>
         {// show start button and set period form
-            timer.startStatus === 'notStart' && <div>
-                <p >Period Length Setting:</p>
+            timer.startStatus === 'notStart' && <div className="period-setting">
+                <p className="period-title">Period Length Setting:</p>
                 <div className="labelContainer" >
 
                     <label className="inputLabel">
@@ -67,14 +67,14 @@ const Timer = () => {
                         <input type='number' min='1' max='60' className="inputField" id='longBreakTime' name='longBreakTime' value={timer.longBreakTime} onChange={updatePeriod}/>
                     </label>
                 </div>
-                <button className="start" onClick={startTimer}>Start</button>
+                <button className="action start" onClick={startTimer}>Start</button>
             </div>}
-        {timer.startStatus === 'started'&&<button onClick={stopTimer}>
+        {timer.startStatus === 'started'&&<button className="action" onClick={stopTimer}>
                 Stop
             </button>}
-        {timer.startStatus==='stopped'||timer.startStatus==='interrupted'&&<div>
-            <button onClick={startTimer}>Resume</button>
-            <button onClick={resetTimer}>Discard</button>
+        {timer.startStatus==='stopped'||timer.startStatus==='interrupted'&&<div className="continue-container">
+            <button className="action" onClick={startTimer}>Resume</button>
+            <button className="action" onClick={resetTimer}>Discard</button>
             </div>}
 
 
@@ -104,19 +104,31 @@ const Wrapper = styled.div`
     .time{
         font-size: 50px;
     }
+    .action{
+        
+        font-size: 50px;
+        margin: 20px 0;
+        border-radius: 15px;
+        border: none;
+        padding: 10px;
+    }
     .start{
         position: relative;
         left: 50%;
         transform: translate(-50%,0);
-        font-size: 50px;
-        margin: 20px 0;
     }
     .labelContainer{
         display: flex;
         gap: 20px;
     }
-    /* .innerProgress{
-        width:85%;
-        transform: rotate(20deg);
-    } */
+    .period-setting{
+        margin: 20px 0 10px 0;
+    }
+    .period-title{
+        margin:10px 0;
+    }
+    .continue-container{
+        display: flex;
+        gap: 20px;
+    }
 `;

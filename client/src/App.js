@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes,Route } from "react-router-dom";
-import {useEffect} from "react";
+
 import GlobalStyles from "./GlobalStyles";
 import styled from "styled-components";
 import NavBar from "./components/NavBar";
@@ -40,6 +40,7 @@ export default App;
 
 const BackContainer=styled.div`
   /* background-color: aqua; */
+  /* background-color: #f7f7f7; */
 `
 
 
@@ -55,5 +56,5 @@ const BodyWrapper=styled.div`
   border-width: 0 2px;
   border-style:solid;
   border-color: #f7f7f7;
-
+  
 `;

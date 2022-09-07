@@ -4,7 +4,10 @@ export const UserContext=createContext();
 
 const KEY='user';
 
+
 export const UserContextProvider=({children})=>{
+
+    // user info get from backend and github
     const [user,setUser]=useState(()=>{
         const storage=window.localStorage.getItem(KEY);
         return storage?JSON.parse(storage):null;

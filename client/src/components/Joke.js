@@ -1,7 +1,8 @@
 import { useState } from "react";
 import styled from "styled-components";
 
-
+// a joke that use joke api
+// shows during the break
 const Joke=()=>{
     const [joke,setJoke]=useState(null);
     useState(()=>{
@@ -21,5 +22,5 @@ const Joke=()=>{
 export default Joke;
 
 const Wrapper=styled.div`
-
+    margin: 10px;
 `;

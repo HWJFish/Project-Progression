@@ -1,10 +1,10 @@
-import { useState, useContext, useRef } from 'react';
+import { useState, useContext, useRef, useEffect } from 'react';
 import styled from 'styled-components';
-import { ProgressContext } from '../ProgressContext';
-import { UserContext } from '../UserContext';
+import { ProgressContext } from '../context/ProgressContext';
+import { UserContext } from '../context/UserContext';
 import { Alert } from '@mui/material'
 
-
+// a submission form including time and adding tags
 const Submission = () => {
     const { timer, setTimer, resetTimer, task, setTask, resetTask } = useContext(ProgressContext);
     const { user } = useContext(UserContext);
@@ -13,7 +13,7 @@ const Submission = () => {
     const [result, setResult] = useState(null);
     let resultTimeout = null;
 
-
+    //add tag to task and reset field
     const addTag = () => {
         const newTag = addTagRef.current.value;
         if (newTag && !task.tags.includes(newTag)) {
@@ -21,6 +21,8 @@ const Submission = () => {
             addTagRef.current.value = '';
         }
     }
+
+    // do the calculation of that timer
     const getTotalTime = () => {
         let totalTime = extraTimeRef.current.value * 60 * 1000;
         totalTime += (timer.count) * timer.workTime * 60 * 1000;
@@ -29,12 +31,16 @@ const Submission = () => {
         }
         return totalTime;
     }
+
+    // show the result for 5 second
     const showResult = (theResult) => {
         setResult(theResult)
         resultTimeout = setTimeout(() => {
             setResult(null);
         }, 5000);
     }
+
+    // organize the result and submit to the server
     const submit = (e) => {
         e.preventDefault();
         fetch('/api/progress', {
@@ -74,14 +80,21 @@ const Submission = () => {
             )
     }
 
+    //clean up for the result timeout
+    useEffect(() => {
+        return () => clearTimeout(result);
+    }, [])
+
     return <Wrapper>
         {(timer.startStatus === 'interrupted' || timer.startStatus === 'stopped') &&
             <form onSubmit={submit}>
                 <h2>Submission</h2>
-                <label>
-                    Extra time you spent while not using the app:
-                    <input type='number' defaultValue={0} min='0' ref={extraTimeRef} />
-                </label>
+                <div className='labelContainer'>
+                    <label>
+                        Extra time you spent while not using the app (minutes):
+                        <input type='number' defaultValue={0} min='0' ref={extraTimeRef} />
+                    </label>
+                </div>
                 {task.tags[0] && <div>
                     <h3>Current Tags</h3>
                     {task.tags.map((tag, index) => {
@@ -89,14 +102,14 @@ const Submission = () => {
                     })}
                 </div>}
 
-                <div>
+                <div className='labelContainer'>
                     <label>
                         Add Tags:
                         <input ref={addTagRef} />
                     </label>
                     <button type='button' onClick={addTag}>Add</button>
                 </div>
-                <button type='submit' >Submit</button>
+                <button className='submit' type='submit' >Submit</button>
             </form>}
 
         {result && <Alert severity={result.result}>{result.message}</Alert>}
@@ -107,11 +120,24 @@ const Submission = () => {
 export default Submission;
 
 const Wrapper = styled.div`
+margin: 10px;
     .tag{
-       border:1px solid var(--color-main);
-       border-radius: 50%;
-       padding: 5px;
-       margin: 10px;
+        border:1px solid var(--color-main);
+        border-radius: 50%;
+        padding: 5px;
+        margin: 10px;
         display: inline-block;
+    }
+    .labelContainer{
+        margin: 10px 0;
+    }
+    .submit{
+        position: relative;
+        left: 50%;
+        transform: translate(-50%,0);
+        font-size: 50px;
+        margin: 20px 0;
+        border-radius: 15px;
+        padding: 10px;
     }
 `;
